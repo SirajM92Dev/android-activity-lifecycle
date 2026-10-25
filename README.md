@@ -1,64 +1,61 @@
-# Android Activity Lifecycle Demonstration
+# Android Activity Lifecycle & Bidirectional Intent Data Passing
 
-This project demonstrates the complete Android Activity Lifecycle through practical implementation and visual tracking across two distinct activities (`MainActivity` and `SecondActivity`).
+A complete Android demonstration showcasing both the **Android Activity Lifecycle** and **bidirectional data passing** between two activities (`MainActivity` and `SecondActivity`) using explicit `Intent`s.
 
 ---
 
 ## 📌 Project Overview
 
-An Android Activity passes through several states from the moment it is launched until it is destroyed. In this project, each lifecycle callback is overridden and triggers a distinct `Toast` notification, allowing users and reviewers to visually observe each transition in real time.
+This project serves two main educational purposes in Android development:
 
-- **MainActivity**: Displays bottom-aligned Toast messages during state transitions and includes a clickable view to trigger navigation.
-- **SecondActivity**: Uses center-aligned Toast messages to prevent visual overlap with MainActivity's messages.
+1. **Activity Lifecycle Observation**: Visualizes state transitions across all 7 lifecycle callbacks using custom `Toast` notifications.
+   - `MainActivity` displays default bottom-aligned toasts.
+   - `SecondActivity` displays center-screen toasts to avoid visual overlap.
+2. **Bidirectional Intent Data Passing**:
+   - **Forward Passing**: `MainActivity` captures user text input and sends it to `SecondActivity` via `Intent.putExtra()`.
+   - **Backward Passing**: `SecondActivity` captures a response message, packages it into a result `Intent` using `setResult()`, and sends it back to `MainActivity` upon finishing, where it is received via `ActivityResultLauncher`.
 
 ---
 
-## 🔄 Lifecycle Methods Demonstrated
+## 🔄 Lifecycle Methods Implemented
 
-Each activity overrides all 7 fundamental Android lifecycle callbacks:
+Both activities implement and track all fundamental lifecycle callbacks:
 
-| Callback | Invocation Point |
+| Callback | Description |
 | :--- | :--- |
-| `onCreate()` | Called when the activity is first created. Initializes UI components and view bindings. |
-| `onStart()` | Called when the activity becomes visible to the user. |
-| `onResume()` | Called when the activity starts interacting with the user (in foreground). |
-| `onPause()` | Called when the system is about to resume another activity (partially obscured). |
-| `onStop()` | Called when the activity is no longer visible to the user. |
-| `onRestart()` | Called after the activity has been stopped, prior to starting again. |
-| `onDestroy()` | Called before the activity is destroyed by the system or via `finish()`. |
+| `onCreate()` | Initializes UI layouts, click listeners, and extracts Intent extras. |
+| `onStart()` | Triggers when the activity becomes visible to the user. |
+| `onResume()` | Triggers when the activity enters the foreground and is interactive. |
+| `onPause()` | Called when the activity is partially obscured or losing focus. |
+| `onStop()` | Called when the activity is no longer visible on screen. |
+| `onRestart()` | Invoked when returning to a stopped activity before restarting it. |
+| `onDestroy()` | Final cleanup before the activity is removed from memory. |
 
 ---
 
-## 🚀 Transition Sequence
+## 🔁 Data Flow Architecture
 
-1. **App Launch**:
-   $$\text{onCreate()} \rightarrow \text{onStart()} \rightarrow \text{onResume()}$$
-2. **Navigating to SecondActivity**:
-   - `MainActivity: onPause()`
-   - `SecondActivity: onCreate()` $\rightarrow$ `onStart()` $\rightarrow$ `onResume()`
-   - `MainActivity: onStop()`
-3. **Pressing Back to Return to MainActivity**:
-   - `SecondActivity: onPause()`
-   - `MainActivity: onRestart()` $\rightarrow$ `onStart()` $\rightarrow$ `onResume()`
-   - `SecondActivity: onStop()` $\rightarrow$ `onDestroy()`
-4. **Minimizing/Exiting the App**:
-   $$\text{onPause()} \rightarrow \text{onStop()} \rightarrow \text{onDestroy()}$$
-
----
-
-## 📁 Repository Structure
-
-- `MainActivity.java` — Core launcher activity with lifecycle callbacks and Intent navigation.
-- `SecondActivity.java` — Secondary activity demonstrating center-aligned toast logging.
-- `activity_main.xml` — Layout containing clickable navigation UI for `MainActivity`.
-- `activity_second.xml` — Layout for `SecondActivity`.
-- `AndroidManifest.xml` — Manifest registering both activities and specifying the launcher activity.
-
----
-
-## 🛠️ Requirements & Setup
-
-- **Language**: Java
-- **Platform**: Android OS
-- **IDE**: Android Studio
-- **Setup**: Import the files into your app's `src/main` directory, build the project, and run it on an emulator or physical device to inspect the Toast notifications as you navigate.
+```text
+[ MainActivity ]
+       │
+       │  1. Forward Data:
+       │     intent.putExtra("EXTRA_FORWARD_DATA", inputMessage);
+       │     secondActivityLauncher.launch(intent);
+       ▼
+[ SecondActivity ]
+       │
+       │  2. Receive & Display:
+       │     getIntent().getStringExtra("EXTRA_FORWARD_DATA");
+       │
+       │  3. Backward Data:
+       │     Intent returnIntent = new Intent();
+       │     returnIntent.putExtra("EXTRA_REPLY_DATA", replyMessage);
+       │     setResult(RESULT_OK, returnIntent);
+       │     finish();
+       ▼
+[ MainActivity ]
+       │
+       └─► 4. Handle Result:
+              secondActivityLauncher receives callback:
+              result.getData().getStringExtra("EXTRA_REPLY_DATA");
+              Updates tvReturnedData view.
