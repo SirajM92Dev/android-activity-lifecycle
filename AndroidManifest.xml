@@ -3,7 +3,7 @@
 
     <application
         android:allowBackup="true"
-        android:label="Lifecycle Demo"
+        android:label="Lifecycle & Intent Data Demo"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
 
