@@ -1,11 +1,36 @@
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
+
+    private EditText etMainMessage;
+    private TextView tvReturnedData;
+    private Button btnSendForward;
+
+    // Launcher for handling data returned backward from SecondActivity
+    private final ActivityResultLauncher<Intent> secondActivityLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        String reply = result.getData().getStringExtra("EXTRA_REPLY_DATA");
+                        tvReturnedData.setText("Returned Backward: " + reply);
+                    }
+                }
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,12 +39,21 @@ public class MainActivity extends AppCompatActivity {
 
         Toast.makeText(this, "MainActivity: onCreate()", Toast.LENGTH_SHORT).show();
 
-        TextView tvFirst = findViewById(R.id.tvFirstActivity);
-        tvFirst.setOnClickListener(new View.OnClickListener() {
+        etMainMessage = findViewById(R.id.etMainMessage);
+        tvReturnedData = findViewById(R.id.tvReturnedData);
+        btnSendForward = findViewById(R.id.btnSendForward);
+
+        btnSendForward.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String messageToSend = etMainMessage.getText().toString();
+
                 Intent intent = new Intent(MainActivity.this, SecondActivity.class);
-                startActivity(intent);
+                // 1. Forward Data Passing via Intent extra
+                intent.putExtra("EXTRA_FORWARD_DATA", messageToSend);
+
+                // Launch using the result launcher to receive data back later
+                secondActivityLauncher.launch(intent);
             }
         });
     }
