@@ -1,23 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center"
     android:background="#1E88E5">
 
     <TextView
-        android:id="@+id/tvFirstActivity"
+        android:id="@+id/tvFirstTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="First Activity\n(Click to open Second)"
-        android:textAlignment="center"
+        android:text="First Activity"
         android:textColor="#FFFFFF"
-        android:textSize="28sp"
+        android:textSize="26sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginBottom="20dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <EditText
+        android:id="@+id/etMainMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Type message to send to SecondActivity"
+        android:textColor="#000000"
+        android:textColorHint="#616161"
+        android:background="#FFFFFF"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/btnSendForward"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Send Forward →"
+        android:backgroundTint="#FF9800"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:id="@+id/tvReturnedData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Data returned from SecondActivity will appear here"
+        android:textColor="#FFEB3B"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:padding="12dp"
+        android:background="#1565C0" />
+
+</LinearLayout>
